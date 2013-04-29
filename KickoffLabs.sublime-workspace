@@ -519,14 +519,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "big-show-video.liquid",
-			"settings":
-			{
-				"buffer_size": 33482,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -580,6 +572,8 @@
 	},
 	"file_history":
 	[
+		"/Applications/MAMP/htdocs/KickoffLabs/big-show-video.liquid",
+		"/Applications/MAMP/htdocs/KickoffLabs/bi-show-video-backup.liquid.html",
 		"/Applications/MAMP/htdocs/ThemesTent/TTFWebsite/components/inviteify/js/jquery.lazyload.min.js",
 		"/Applications/MAMP/htdocs/ThemesTent/TTFWebsite/components/inviteify/js/ttf.js",
 		"/Applications/MAMP/htdocs/ThemesTent/TTFWebsite/components/inviteify/info.php",
@@ -705,9 +699,7 @@
 		"/Applications/MAMP/htdocs/know-your-coverage/kyc/js/kyc.js",
 		"/Applications/MAMP/htdocs/know-your-coverage/kyc/JS/jquery-1.8.2.min.js",
 		"/Applications/MAMP/htdocs/know-your-coverage/kyc/JS/jquery-mobile.js",
-		"/Applications/MAMP/htdocs/know-your-coverage/kyc/themes/css/jquery-structure.min.css",
-		"/Applications/MAMP/htdocs/know-your-coverage/kyc/buttons.html",
-		"/Applications/MAMP/htdocs/know-your-coverage/kyc/themes/Bootstrap.min.css"
+		"/Applications/MAMP/htdocs/know-your-coverage/kyc/themes/css/jquery-structure.min.css"
 	],
 	"find":
 	{
@@ -726,6 +718,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"min-",
 			".delta",
 			"background",
 			"boots",
@@ -852,8 +845,7 @@
 			"inline-block",
 			"footer",
 			"add-button",
-			"nav-below",
-			"ease-out"
+			"nav-below"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -921,37 +913,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "big-show-video.liquid",
-					"settings":
-					{
-						"buffer_size": 33482,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								739,
-								739
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Liquid/Syntaxes/HTML Liquid.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 754.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		},
 		{
