@@ -1,5 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
 <!-- <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> -->
     {% title %}
@@ -659,6 +662,89 @@
 
     <!-- easing plugin ( optional ) -->
     <script src="{% asset_path js/jquery-libs/easing/easing.1.1.2.js %}" type="text/javascript"></script>
+    <script>
+        /*global jQuery */
+        /*jshint multistr:true browser:true */
+        /*!
+        * FitVids 1.0
+        *
+        * Copyright 2011, Chris Coyier - http://css-tricks.com + Dave Rupert - http://daverupert.com
+        * Credit to Thierry Koblentz - http://www.alistapart.com/articles/creating-intrinsic-ratios-for-video/
+        * Released under the WTFPL license - http://sam.zoy.org/wtfpl/
+        *
+        * Date: Thu Sept 01 18:00:00 2011 -0500
+        */
+
+        (function( $ ){
+
+          "use strict";
+
+          $.fn.fitVids = function( options ) {
+            var settings = {
+              customSelector: null
+            };
+
+            var div = document.createElement('div'),
+                ref = document.getElementsByTagName('base')[0] || document.getElementsByTagName('script')[0];
+
+            div.className = 'fit-vids-style';
+            div.innerHTML = '&shy;<style>         \
+              .fluid-width-video-wrapper {        \
+                 width: 100%;                     \
+                 position: relative;              \
+                 padding: 0;                      \
+              }                                   \
+                                                  \
+              .fluid-width-video-wrapper iframe,  \
+              .fluid-width-video-wrapper object,  \
+              .fluid-width-video-wrapper embed {  \
+                 position: absolute;              \
+                 top: 0;                          \
+                 left: 0;                         \
+                 width: 100%;                     \
+                 height: 100%;                    \
+              }                                   \
+            </style>';
+
+            ref.parentNode.insertBefore(div,ref);
+
+            if ( options ) {
+              $.extend( settings, options );
+            }
+
+            return this.each(function(){
+              var selectors = [
+                "iframe[src*='player.vimeo.com']",
+                "iframe[src*='www.youtube.com']",
+                "iframe[src*='www.kickstarter.com']",
+                "object",
+                "embed"
+              ];
+
+              if (settings.customSelector) {
+                selectors.push(settings.customSelector);
+              }
+
+              var $allVideos = $(this).find(selectors.join(','));
+
+              $allVideos.each(function(){
+                var $this = $(this);
+                if (this.tagName.toLowerCase() === 'embed' && $this.parent('object').length || $this.parent('.fluid-width-video-wrapper').length) { return; }
+                var height = ( this.tagName.toLowerCase() === 'object' || ($this.attr('height') && !isNaN(parseInt($this.attr('height'), 10))) ) ? parseInt($this.attr('height'), 10) : $this.height(),
+                    width = !isNaN(parseInt($this.attr('width'), 10)) ? parseInt($this.attr('width'), 10) : $this.width(),
+                    aspectRatio = height / width;
+                if(!$this.attr('id')){
+                  var videoID = 'fitvid' + Math.floor(Math.random()*999999);
+                  $this.attr('id', videoID);
+                }
+                $this.wrap('<div class="fluid-width-video-wrapper"></div>').parent('.fluid-width-video-wrapper').css('padding-top', (aspectRatio * 100)+"%");
+                $this.removeAttr('height').removeAttr('width');
+              });
+            });
+          };
+        })( jQuery );
+
+    </script>
 
     <!-- Cufon Font Replacement -->
 
@@ -696,12 +782,15 @@
 
         $(document).ready(function() {
           $().UItoTop({ easingType: 'easeOutQuart' });
-                $(".feat a").fancybox();
+          $(".feat a").fancybox();
+          $( ".featured-video" ).fitVids();
         });
 
 
         </script>
         {% integrations header %}
+
+        <script src='http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js' type='text/javascript'></script>
 </head>
 
 <body id="top">
@@ -738,114 +827,110 @@
 
 
         <!-- Start Header Break Line -->
-        <div class="container_12">
-            <div class="grid_12">
-              <hr>
-            </div>
-        </div><!-- Header Break Line END -->
+        <hr>
+        <!-- Header Break Line END -->
 
-        <div class="clear"></div><!-- CLEAR -->
 
         <!-- Start Teaser -->
-        <div class="container_12 ">
-
-            <!-- Start Centered Text -->
-            <div class="grid_12">
-
+        <div class="container">
+            <div class="row">
+                <!-- Start Centered Text -->
                 <!-- Heading -->
                 <h1 class="heading">{{ content.tagline }}</h1>
 
                 {% if content.sub_tagline != '' %}
                 <!-- Subheading -->
                 <span class="subhead">{{ content.sub_tagline }}</span>
-        {% endif %}
-            </div><!-- Centered Text END -->
+                {% endif %}
+                <!-- End Centered Text -->
+            </div>
+        </div>
 
-        </div><!-- Teaser END -->
 
-    <div class="clear"></div>
+    <!-- Start Main Container -->
+    <div id="main_content" class="container">
+        <div class="row">
+            <!-- Start Video -->
+            <div class="span8 featured">
+                <div class="featured-video">
+                    {{content.video_link_or_embed | fallback: 'http://vimeo.com/51303005' | video}}
+                </div>
 
-    <!-- Start Container 12 -->
-    <div id="main_content" class="container_12">
+            </div><!-- Video END -->
 
-        <!-- Start Video -->
-        <div class="grid_8 featured">
+            <!-- Start newsletter Signup -->
+            <div class="span4">
 
-            {{content.video_link_or_embed | fallback: 'http://vimeo.com/51303005' | video: 620, 465}}
+                <!-- Start Background Image -->
+                <div class="signup">
 
-        </div><!-- Video END -->
+                    <!-- Start Newsletter Box -->
+                    <div class="newsletter">
 
-        <!-- Start newsletter Signup -->
-        <div class="grid_4">
+                        {{ content.description }}
+                        <!-- Start Form -->
+                        <div class="searchDiv">
+                          {% if content.signup_or_click_through == 'Signup' %}
+                            {% form %}
+                                {% for element in form_elements %}
+                                    {% assign req_star = '' %}
+                                    {% if element.required_class == 'required' %}
+                                      {% assign req_star = '*' %}
+                                    {% endif %}
+                                    {% case element.field_type %}
+                                    {% when 'email' %}
+                                          <input class="inputbg {{element.required_class}}" id="email" name="email" type="email" data-label-text = "{{ element.label }}"  placeholder="{{element.placeholder}} {{req_star}}" />
+                                          {% when 'text' %}
+                                          <input class="inputbg {{element.required_class}}" id="{{element.name}}" name="{{element.name}}" placeholder="{{element.placeholder}} {{req_star}}" type="text" data-label-text="{{element.label}}" />
+                                          {% when 'textarea' %}
+                                          <textarea id="{{element.name}}" class="inputbg {{element.required_class}}" name="{{element.name}}" rows=3 placeholder="{{element.placeholder}} {{req_star}}" data-label-text="{{element.lable}}"></textarea>
+                                          {% when 'choice' %}
+                                          <select id="{{element.name}}" name="{{element.name}}" class="inputbg" placeholder="{{element.placeholder}}" data-label-text="{{element.label}}">
+                                            {% for choice in element.choices %}
+                                            <option>{{choice}}</option>
+                                            {% endfor %}
+                                         </select>
+                                         {% when 'checkbox' %}
+                                         <label>
+                                           <input type="checkbox" class="inputbg" id="{{element.name}}" name="{{element.name}}" data-label-text = "{{element.label}}" />
+                                           {{element.placeholder}}  {{req_star}}
+                                        </label>
+                                    {% endcase %}
+                                {% endfor %}
+                                <div class="clear"></div>
+                                <input type="submit" class="submit button" id="submit_button" value="{{ content.button_text }}" />
+                            {% endform %}
 
-            <!-- Start Background Image -->
-            <div class="signup">
-
-                <!-- Start Newsletter Box -->
-                <div class="newsletter">
-
-                    {{ content.description }}
-                    <!-- Start Form -->
-                    <div class="searchDiv">
-                      {% if content.signup_or_click_through == 'Signup' %}
-                        {% form %}
-                            {% for element in form_elements %}
-                                {% assign req_star = '' %}
-                                {% if element.required_class == 'required' %}
-                                  {% assign req_star = '*' %}
-                                {% endif %}
-                                {% case element.field_type %}
-                                {% when 'email' %}
-                                      <input class="inputbg {{element.required_class}}" id="email" name="email" type="email" data-label-text = "{{ element.label }}"  placeholder="{{element.placeholder}} {{req_star}}" />
-                                      {% when 'text' %}
-                                      <input class="inputbg {{element.required_class}}" id="{{element.name}}" name="{{element.name}}" placeholder="{{element.placeholder}} {{req_star}}" type="text" data-label-text="{{element.label}}" />
-                                      {% when 'textarea' %}
-                                      <textarea id="{{element.name}}" class="inputbg {{element.required_class}}" name="{{element.name}}" rows=3 placeholder="{{element.placeholder}} {{req_star}}" data-label-text="{{element.lable}}"></textarea>
-                                      {% when 'choice' %}
-                                      <select id="{{element.name}}" name="{{element.name}}" class="inputbg" placeholder="{{element.placeholder}}" data-label-text="{{element.label}}">
-                                        {% for choice in element.choices %}
-                                        <option>{{choice}}</option>
-                                        {% endfor %}
-                                     </select>
-                                     {% when 'checkbox' %}
-                                     <label>
-                                       <input type="checkbox" class="inputbg" id="{{element.name}}" name="{{element.name}}" data-label-text = "{{element.label}}" />
-                                       {{element.placeholder}}  {{req_star}}
-                                    </label>
-                                {% endcase %}
-                            {% endfor %}
                             <div class="clear"></div>
-                            <input type="submit" class="submit button" id="submit_button" value="{{ content.button_text }}" />
-                        {% endform %}
+                            {% response %}
+                                <div class="response">
+                                  {% common_thankyou_share %}
+                                </div>
+                            {% endresponse %}
+                            {% else %}
+                              <a href="{{ content.click_through_link }}" class="click-through submit button" id="signup" title="{{ content.button_text }}">{{ content.button_text }}</a>
+                            {% endif %}
+                            <div class="clear"></div>
+                            <div id="kol_fade"></div>
+                        </div><!-- Form END -->
 
-                        <div class="clear"></div>
-                        {% response %}
-                            <div class="response">
-                              {% common_thankyou_share %}
-                            </div>
-                        {% endresponse %}
-                        {% else %}
-                          <a href="{{ content.click_through_link }}" class="click-through submit button" id="signup" title="{{ content.button_text }}">{{ content.button_text }}</a>
-                        {% endif %}
-                        <div class="clear"></div>
-                        <div id="kol_fade"></div>
-                    </div><!-- Form END -->
-
-                    <div class="clear"></div><!-- CLEAR -->
+                        <div class="clear"></div><!-- CLEAR -->
 
 
-                </div><!-- Newsletter Box END -->
+                    </div><!-- Newsletter Box END -->
 
-            </div><!-- Background Image END-->
+                </div><!-- Background Image END-->
 
-        </div><!-- Newsletter Signup END -->
+            </div><!-- Newsletter Signup END -->
+        </div>
 
-        <div class="clear"></div><!-- CLEAR -->
+
+
 
         {% if content.feature_headline_3 != '' %}
-          {% assign grid = 'grid_4' %}
+          {% assign grid = 'span4' %}
         {% else %}
-          {% assign grid = 'grid_6' %}
+          {% assign grid = 'span6' %}
         {% endif %}
 
         <!-- Start Box 1 -->
@@ -985,7 +1070,7 @@
 
         </div>
 
-    </div><!-- Container 12 END-->
+    </div><!-- Main Container END-->
 
     <div class="clear"></div><!-- CLEAR -->
 
